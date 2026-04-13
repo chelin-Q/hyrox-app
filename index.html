@@ -3,470 +3,302 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HYROX Trainer — AI 맞춤 훈련 계획</title>
+<title>HYROX Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --black: #0a0a0a;
-    --white: #f5f3ee;
-    --green: #1a9e6e;
-    --green-dark: #0f6e4a;
-    --green-light: #e0f5ec;
-    --gray: #888;
-    --gray-light: #f0eeea;
-    --border: #e0ddd8;
-    --card-bg: #ffffff;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--white);
-    color: var(--black);
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 15px;
-    line-height: 1.6;
-    min-height: 100vh;
-  }
-  header {
-    background: var(--black);
-    color: var(--white);
-    padding: 0 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 56px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .logo {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 22px;
-    font-weight: 800;
-    letter-spacing: 2px;
-    color: var(--white);
-  }
-  .logo span { color: var(--green); }
-  .header-badge {
-    font-size: 11px;
-    background: var(--green);
-    color: #fff;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-weight: 500;
-  }
-  .hero {
-    background: var(--black);
-    color: var(--white);
-    padding: 48px 24px 40px;
-    text-align: center;
-  }
-  .hero-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: clamp(36px, 8vw, 64px);
-    font-weight: 800;
-    letter-spacing: 1px;
-    line-height: 1.1;
-    margin-bottom: 12px;
-  }
-  .hero-title span { color: var(--green); }
-  .hero-sub {
-    font-size: 15px;
-    color: #aaa;
-    max-width: 380px;
-    margin: 0 auto 28px;
-    line-height: 1.6;
-  }
-  .stats-row {
-    display: flex;
-    justify-content: center;
-    gap: 32px;
-    flex-wrap: wrap;
-  }
-  .stat-item { text-align: center; }
-  .stat-num {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--green);
-  }
-  .stat-lbl { font-size: 12px; color: #888; margin-top: 2px; }
-  .main { max-width: 560px; margin: 0 auto; padding: 24px 16px 60px; }
-  .section-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: var(--gray);
-    text-transform: uppercase;
-    margin-bottom: 12px;
-    margin-top: 28px;
-  }
-  .card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 14px;
-  }
-  .card-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--black);
-    margin-bottom: 14px;
-  }
-  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .input-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
-  .input-group:last-child { margin-bottom: 0; }
-  .input-group label { font-size: 12px; color: var(--gray); font-weight: 500; }
-  .input-group input,
-  .input-group select,
-  .input-group textarea {
-    font-size: 14px;
-    padding: 10px 12px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--gray-light);
-    color: var(--black);
-    font-family: 'Noto Sans KR', sans-serif;
-    width: 100%;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .input-group input:focus,
-  .input-group select:focus,
-  .input-group textarea:focus { border-color: var(--green); background: #fff; }
-  .input-group textarea { resize: none; line-height: 1.5; }
-  .weakness-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
-  .weak-btn {
-    padding: 9px 8px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 13px;
-    text-align: center;
-    cursor: pointer;
-    color: var(--gray);
-    background: var(--gray-light);
-    font-family: 'Noto Sans KR', sans-serif;
-    transition: all 0.15s;
-  }
-  .weak-btn:hover { border-color: var(--green); color: var(--green); }
-  .weak-btn.sel { border-color: var(--green); background: var(--green-light); color: var(--green-dark); font-weight: 700; }
-  .btn-main {
-    width: 100%;
-    padding: 14px;
-    background: var(--green);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: 'Barlow Condensed', sans-serif;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    transition: background 0.2s;
-    margin-top: 4px;
-  }
-  .btn-main:hover { background: var(--green-dark); }
-  .btn-main:disabled { background: var(--border); color: var(--gray); cursor: not-allowed; }
-  .result-area {
-    background: var(--gray-light);
-    border-radius: 8px;
-    padding: 14px;
-    font-size: 14px;
-    color: var(--black);
-    line-height: 1.8;
-    min-height: 80px;
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-  .loading { color: var(--gray); font-style: italic; }
-  .legend { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
-  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--gray); }
-  .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
-  .week-row { display: flex; gap: 5px; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); }
-  .week-row:last-child { border-bottom: none; }
-  .week-num { font-size: 11px; color: var(--gray); width: 38px; flex-shrink: 0; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; }
-  .day-pill { flex: 1; padding: 5px 3px; border-radius: 5px; font-size: 11px; text-align: center; font-weight: 500; }
-  .pill-run { background: #e0f5ec; color: #0a5c38; }
-  .pill-station { background: #e6f1fb; color: #0c447c; }
-  .pill-combo { background: #faeeda; color: #633806; }
-  .pill-rest { background: var(--gray-light); color: #aaa; }
-  .btn-outline {
-    width: 100%;
-    padding: 11px;
-    background: transparent;
-    color: var(--green);
-    border: 1px solid var(--green);
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: 'Barlow Condensed', sans-serif;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-top: 12px;
-    transition: all 0.15s;
-  }
-  .btn-outline:hover { background: var(--green-light); }
-  .hidden { display: none; }
-  footer {
-    background: var(--black);
-    color: #666;
-    text-align: center;
-    padding: 20px;
-    font-size: 12px;
-  }
-  footer span { color: var(--green); }
-  @media (max-width: 400px) {
-    .row2 { grid-template-columns: 1fr; }
-    .weakness-grid { grid-template-columns: 1fr 1fr; }
-  }
+:root{--bg:#0e0e0e;--surface:#1a1a1a;--surface2:#242424;--border:#2e2e2e;--green:#00e676;--green-dim:#00b359;--green-bg:rgba(0,230,118,0.08);--text:#f0f0f0;--muted:#888;--amber:#ffab40;--red:#ff5252;--blue:#448aff}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;min-height:100vh}
+nav{background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:52px;position:sticky;top:0;z-index:200}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:var(--green)}
+.nav-tabs{display:flex;gap:2px}
+.nav-tab{padding:6px 14px;border-radius:6px;font-size:13px;cursor:pointer;color:var(--muted);background:transparent;border:none;font-family:'Noto Sans KR',sans-serif;transition:all 0.15s}
+.nav-tab.active{background:var(--green-bg);color:var(--green);font-weight:700}
+.nav-tab:hover:not(.active){color:var(--text)}
+.page{display:none;padding:20px;max-width:520px;margin:0 auto;padding-bottom:60px}
+.page.active{display:block}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px}
+.card-head{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--muted);margin-bottom:14px}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat-box{background:var(--surface2);border-radius:8px;padding:14px}
+.stat-label{font-size:11px;color:var(--muted);margin-bottom:4px}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px}
+.stat-val.green{color:var(--green)}
+.stat-val.amber{color:var(--amber)}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.fg label{font-size:11px;color:var(--muted);font-weight:500;letter-spacing:0.5px}
+.fg input,.fg select{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;padding:10px 12px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color 0.15s;width:100%}
+.fg input:focus,.fg select:focus{border-color:var(--green)}
+.fg input::placeholder{color:#555}
+.btn{width:100%;padding:13px;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Bebas Neue',sans-serif;letter-spacing:2px;transition:all 0.15s}
+.btn-green{background:var(--green);color:#000}
+.btn-green:hover{background:var(--green-dim)}
+.btn-outline{background:transparent;color:var(--green);border:1px solid var(--green)}
+.btn-outline:hover{background:var(--green-bg)}
+.btn-red{background:transparent;color:var(--red);border:1px solid var(--red);padding:7px 14px;width:auto;font-size:12px;border-radius:6px;cursor:pointer;font-family:'Noto Sans KR',sans-serif}
+.seg-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.seg-input-wrap{background:var(--surface2);border-radius:8px;padding:10px}
+.seg-name{font-size:11px;color:var(--muted);margin-bottom:5px}
+.seg-input{background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-size:14px;padding:4px 0;width:100%;font-family:'Noto Sans KR',sans-serif;outline:none}
+.seg-input:focus{border-color:var(--green)}
+.seg-input::placeholder{color:#444}
+.hist-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+.hist-item:last-child{border-bottom:none}
+.hist-date{font-size:11px;color:var(--muted);margin-bottom:2px}
+.hist-time{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--green);letter-spacing:1px}
+.hist-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.hist-right{display:flex;align-items:center;gap:8px}
+.pr-badge{background:var(--green-bg);color:var(--green);font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;border:1px solid rgba(0,230,118,0.3)}
+.pace-result{background:var(--green-bg);border:1px solid rgba(0,230,118,0.2);border-radius:10px;padding:16px;margin-top:12px}
+.pace-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.pace-row:last-child{border-bottom:none}
+.pace-seg{font-size:13px;color:var(--text)}
+.pace-target{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--green);letter-spacing:1px}
+.week-card{background:var(--surface2);border-radius:10px;padding:14px;margin-bottom:10px}
+.week-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.week-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px}
+.phase-badge{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:700}
+.phase-base{background:rgba(68,138,255,0.15);color:var(--blue)}
+.phase-build{background:rgba(255,171,64,0.15);color:var(--amber)}
+.phase-peak{background:rgba(0,230,118,0.15);color:var(--green)}
+.phase-taper{background:rgba(255,82,82,0.15);color:var(--red)}
+.days-row{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.day-cell{border-radius:5px;padding:5px 2px;text-align:center;font-size:10px;font-weight:700}
+.day-name{font-size:9px;color:var(--muted);margin-bottom:2px}
+.d-run{background:rgba(0,230,118,0.12);color:#00e676}
+.d-station{background:rgba(68,138,255,0.12);color:#448aff}
+.d-combo{background:rgba(255,171,64,0.12);color:#ffab40}
+.d-rest{background:rgba(255,255,255,0.03);color:#444}
+.mini-chart{display:flex;align-items:flex-end;gap:6px;height:80px;padding:0 4px}
+.chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.chart-bar{width:100%;border-radius:4px 4px 0 0;background:var(--green-dim);min-height:4px}
+.chart-bar.best{background:var(--green)}
+.chart-label{font-size:9px;color:var(--muted);text-align:center}
+.chart-val{font-size:9px;color:var(--text)}
+.empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty-text{font-size:13px;line-height:1.6}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--green);color:#000;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:999;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
 </style>
 </head>
 <body>
-
-<header>
-  <div class="logo">HYROX<span>.</span>AI</div>
-  <span class="header-badge">Beta</span>
-</header>
-
-<div class="hero">
-  <div class="hero-title">AI가 만드는<br><span>맞춤 훈련 계획</span></div>
-  <p class="hero-sub">목표 기록과 취약 구간을 입력하면 AI가 당신만을 위한 하이록스 훈련 플랜을 생성해드려요.</p>
-  <div class="stats-row">
-    <div class="stat-item">
-      <div class="stat-num">8</div>
-      <div class="stat-lbl">스테이션 분석</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">AI</div>
-      <div class="stat-lbl">맞춤 플랜</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">16주</div>
-      <div class="stat-lbl">최대 훈련 기간</div>
-    </div>
+<nav>
+  <div class="logo">HYROX</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="goPage('dashboard',this)">홈</button>
+    <button class="nav-tab" onclick="goPage('record',this)">기록</button>
+    <button class="nav-tab" onclick="goPage('pace',this)">페이스</button>
+    <button class="nav-tab" onclick="goPage('plan',this)">플랜</button>
   </div>
+</nav>
+
+<div id="page-dashboard" class="page active">
+  <div style="padding:20px 0 14px">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;line-height:1.1">내 하이록스<br><span style="color:var(--green)">기록 현황</span></div>
+  </div>
+  <div class="stat-grid">
+    <div class="stat-box"><div class="stat-label">최고 기록</div><div class="stat-val green" id="dash-best">—</div><div class="stat-sub" id="dash-best-sub">기록 없음</div></div>
+    <div class="stat-box"><div class="stat-label">총 완주</div><div class="stat-val amber" id="dash-count">0</div><div class="stat-sub">회</div></div>
+    <div class="stat-box"><div class="stat-label">평균 기록</div><div class="stat-val" id="dash-avg">—</div><div class="stat-sub">전체 평균</div></div>
+    <div class="stat-box"><div class="stat-label">기록 변화</div><div class="stat-val green" id="dash-improve">—</div><div class="stat-sub" id="dash-improve-sub">이전 대비</div></div>
+  </div>
+  <div class="card"><div class="card-head">기록 추이</div><div id="dash-chart"><div class="empty"><div style="font-size:32px;opacity:0.2;margin-bottom:8px">📊</div><div class="empty-text">기록을 입력하면 차트가 나타나요</div></div></div></div>
+  <div class="card"><div class="card-head">최근 완주</div><div id="dash-recent"><div class="empty"><div style="font-size:32px;opacity:0.2;margin-bottom:8px">🏁</div><div class="empty-text">아직 기록이 없어요<br>기록 탭에서 추가해보세요</div></div></div></div>
 </div>
 
-<div class="main">
-
-  <div class="section-label">내 정보 입력</div>
+<div id="page-record" class="page">
+  <div style="padding:20px 0 14px"><div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--green)">기록 입력</div></div>
   <div class="card">
+    <div class="card-head">대회 정보</div>
     <div class="row2">
-      <div class="input-group">
-        <label>현재 기록 (mm:ss)</label>
-        <input type="text" id="cur-time" placeholder="예: 72:00">
-      </div>
-      <div class="input-group">
-        <label>목표 기록 (mm:ss)</label>
-        <input type="text" id="goal-time" placeholder="예: 60:00">
-      </div>
+      <div class="fg"><label>날짜</label><input type="date" id="r-date"></div>
+      <div class="fg"><label>장소</label><input type="text" id="r-place" placeholder="서울, 도쿄..."></div>
     </div>
     <div class="row2">
-      <div class="input-group">
-        <label>대회까지 남은 기간</label>
-        <select id="weeks-left">
-          <option value="4">4주</option>
-          <option value="8" selected>8주</option>
-          <option value="12">12주</option>
-          <option value="16">16주</option>
-        </select>
-      </div>
-      <div class="input-group">
-        <label>주당 훈련 가능 일수</label>
-        <select id="days-per-week">
-          <option value="3">3일</option>
-          <option value="4" selected>4일</option>
-          <option value="5">5일</option>
-          <option value="6">6일</option>
-        </select>
-      </div>
-    </div>
-    <div class="input-group" style="margin-bottom:0">
-      <label>레벨</label>
-      <select id="level">
-        <option value="beginner">입문 (처음 도전)</option>
-        <option value="intermediate" selected>중급 (1-3회 완주)</option>
-        <option value="advanced">상급 (기록 단축 목표)</option>
-      </select>
+      <div class="fg"><label>카테고리</label><select id="r-cat"><option>Solo Open</option><option>Solo Pro</option><option>Doubles Mixed</option><option>Relay</option></select></div>
+      <div class="fg"><label>총 기록 (mm:ss)</label><input type="text" id="r-total" placeholder="예: 62:34"></div>
     </div>
   </div>
-
-  <div class="section-label">취약 구간 선택</div>
   <div class="card">
-    <div class="weakness-grid" id="weakness-grid">
-      <div class="weak-btn" onclick="toggleWeak(this)" data-val="SkiErg">SkiErg</div>
-      <div class="weak-btn" onclick="toggleWeak(this)" data-val="Sled Push">Sled Push</div>
-      <div class="weak-btn" onclick="toggleWeak(this)" data-val="Sled Pull">Sled Pull</div>
-      <div class="weak-btn" onclick="toggleWeak(this)" data-val="Burpee Broad Jump">Burpee Broad Jump</div>
-      <div class="weak-btn" onclick="toggleWeak(this)" data-val="Row 1000m">Row 1000m</div>
-      <div class="weak-btn" onclick="toggleWeak(this)" data-val="Farmers Carry">Farmers Carry</div>
-      <div class="weak-btn" onclick="toggleWeak(this)" data-val="Sandbag Lunges">Sandbag Lunges</div>
-      <div class="weak-btn" onclick="toggleWeak(this)" data-val="Wall Balls">Wall Balls</div>
-      <div class="weak-btn" onclick="toggleWeak(this)" data-val="런닝 페이스">런닝 페이스</div>
-      <div class="weak-btn" onclick="toggleWeak(this)" data-val="전환 속도">전환 속도</div>
-    </div>
-    <div class="input-group" style="margin-bottom:0">
-      <label>추가 사항 (부상 이력, 장비 제한 등)</label>
-      <textarea id="extra" rows="2" placeholder="예: 무릎 부상 이력, 런닝머신만 가능, 장거리 베이스 있음 등"></textarea>
+    <div class="card-head">구간별 기록 (선택)</div>
+    <div class="seg-grid">
+      <div class="seg-input-wrap"><div class="seg-name">SkiErg 1000m</div><input class="seg-input" id="s-ski" placeholder="3:45"></div>
+      <div class="seg-input-wrap"><div class="seg-name">Sled Push 50m</div><input class="seg-input" id="s-push" placeholder="2:10"></div>
+      <div class="seg-input-wrap"><div class="seg-name">Sled Pull 50m</div><input class="seg-input" id="s-pull" placeholder="2:25"></div>
+      <div class="seg-input-wrap"><div class="seg-name">Burpee Broad Jump</div><input class="seg-input" id="s-burpee" placeholder="3:55"></div>
+      <div class="seg-input-wrap"><div class="seg-name">Row 1000m</div><input class="seg-input" id="s-row" placeholder="3:42"></div>
+      <div class="seg-input-wrap"><div class="seg-name">Farmers Carry</div><input class="seg-input" id="s-farmers" placeholder="1:55"></div>
+      <div class="seg-input-wrap"><div class="seg-name">Sandbag Lunges</div><input class="seg-input" id="s-sandbag" placeholder="4:45"></div>
+      <div class="seg-input-wrap"><div class="seg-name">Wall Balls 100개</div><input class="seg-input" id="s-wallball" placeholder="5:10"></div>
     </div>
   </div>
-
-  <button class="btn-main" id="gen-btn" onclick="generatePlan()">AI 훈련 계획 생성 →</button>
-
-  <div id="plan-card" class="hidden">
-    <div class="section-label">주간 훈련 구조</div>
-    <div class="card">
-      <div class="legend">
-        <div class="legend-item"><div class="legend-dot" style="background:#9FE1CB"></div>런닝</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#B5D4F4"></div>스테이션</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#FAC775"></div>복합훈련</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#e8e6e1"></div>휴식</div>
-      </div>
-      <div id="week-schedule"></div>
-    </div>
-  </div>
-
-  <div id="ai-card" class="hidden">
-    <div class="section-label">AI 맞춤 훈련 계획</div>
-    <div class="card">
-      <div class="result-area" id="result-text"></div>
-      <button class="btn-outline" onclick="shareResult()">결과 복사하기</button>
-    </div>
-  </div>
-
+  <button class="btn btn-green" onclick="saveRecord()">기록 저장</button>
+  <div style="margin-top:24px"><div class="card-head" style="padding:0 0 10px">기록 목록</div><div id="record-list"><div class="empty"><div class="empty-text">저장된 기록이 없어요</div></div></div></div>
 </div>
 
-<footer>
-  <div>Made with <span>AI</span> · HYROX.AI Beta</div>
-  <div style="margin-top:4px">Powered by Claude API</div>
-</footer>
+<div id="page-pace" class="page">
+  <div style="padding:20px 0 14px"><div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--green)">페이스 계산기</div></div>
+  <div class="card">
+    <div class="card-head">목표 기록 시뮬레이터</div>
+    <div class="fg"><label>목표 총 기록 (mm:ss)</label><input type="text" id="pace-goal" placeholder="예: 60:00" oninput="calcPace()"></div>
+    <div class="fg"><label>성별</label><select id="pace-gender" onchange="calcPace()"><option value="m">남성</option><option value="f">여성</option></select></div>
+    <div id="pace-result" style="display:none">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px">구간별 목표 페이스</div>
+      <div class="pace-result" id="pace-breakdown"></div>
+      <div style="margin-top:12px;padding:12px;background:var(--surface2);border-radius:8px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:13px;color:var(--muted)">런닝 목표 페이스 (km당)</span>
+        <span id="run-pace" style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--amber);letter-spacing:1px"></span>
+      </div>
+    </div>
+  </div>
+  <div class="card"><div class="card-head">구간별 기록 비교</div><div id="pace-compare"><div class="empty"><div class="empty-text">구간 기록이 있는 대회가 2개 이상 필요해요</div></div></div></div>
+</div>
+
+<div id="page-plan" class="page">
+  <div style="padding:20px 0 14px"><div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--green)">훈련 플랜</div></div>
+  <div class="card">
+    <div class="card-head">플랜 설정</div>
+    <div class="row2">
+      <div class="fg"><label>대회까지</label><select id="plan-weeks"><option value="4">4주</option><option value="8" selected>8주</option><option value="12">12주</option><option value="16">16주</option></select></div>
+      <div class="fg"><label>주당 훈련일</label><select id="plan-days"><option value="3">3일</option><option value="4" selected>4일</option><option value="5">5일</option><option value="6">6일</option></select></div>
+    </div>
+    <div class="fg"><label>레벨</label><select id="plan-level"><option value="beginner">입문 (처음 도전)</option><option value="intermediate" selected>중급 (1-3회 완주)</option><option value="advanced">상급 (기록 단축)</option></select></div>
+    <button class="btn btn-outline" onclick="renderPlan()">플랜 생성</button>
+  </div>
+  <div id="plan-output"></div>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <script>
-let selectedWeaknesses = [];
+let records = JSON.parse(localStorage.getItem('hyrox_records')||'[]');
+const SEGS=['s-ski','s-push','s-pull','s-burpee','s-row','s-farmers','s-sandbag','s-wallball'];
+const SEG_NAMES=['SkiErg','Sled Push','Sled Pull','Burpee','Row','Farmers','Sandbag','Wall Balls'];
+const STATION_LABELS=['SkiErg 1000m','Sled Push 50m','Sled Pull 50m','Burpee Broad Jump','Row 1000m','Farmers Carry','Sandbag Lunges','Wall Balls 100개'];
+const RATIOS_M={ski:0.065,push:0.038,pull:0.042,burpee:0.072,row:0.062,farmers:0.032,sandbag:0.080,wallball:0.092};
+const RATIOS_F={ski:0.068,push:0.040,pull:0.045,burpee:0.075,row:0.065,farmers:0.034,sandbag:0.083,wallball:0.095};
 
-function toggleWeak(el) {
-  const val = el.dataset.val;
-  if (el.classList.contains('sel')) {
-    el.classList.remove('sel');
-    selectedWeaknesses = selectedWeaknesses.filter(v => v !== val);
-  } else {
-    el.classList.add('sel');
-    selectedWeaknesses.push(val);
-  }
+function toSecs(s){if(!s||!s.includes(':'))return null;const p=s.split(':');const v=parseInt(p[0])*60+parseInt(p[1]);return isNaN(v)?null:v}
+function toMMSS(s){if(!s||isNaN(s))return'—';const m=Math.floor(s/60),sec=Math.round(s%60);return m+':'+String(sec).padStart(2,'0')}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
+function goPage(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  el.classList.add('active');
+  if(id==='dashboard')renderDashboard();
+  if(id==='record')renderRecordList();
+  if(id==='pace')renderPaceCompare();
 }
-
-function buildSchedule(days, weeks) {
-  const daysNum = parseInt(days);
-  const weeksNum = parseInt(weeks);
-  const dayNames = ['월','화','수','목','금','토','일'];
-  const schedules = {
-    3:[{type:'run',label:'런닝'},{type:'rest',label:'휴식'},{type:'station',label:'스테이션'},{type:'rest',label:'휴식'},{type:'combo',label:'복합'},{type:'rest',label:'휴식'},{type:'rest',label:'휴식'}],
-    4:[{type:'run',label:'런닝'},{type:'station',label:'스테이션'},{type:'rest',label:'휴식'},{type:'combo',label:'복합'},{type:'rest',label:'휴식'},{type:'run',label:'런닝'},{type:'rest',label:'휴식'}],
-    5:[{type:'run',label:'런닝'},{type:'station',label:'스테이션'},{type:'combo',label:'복합'},{type:'rest',label:'휴식'},{type:'run',label:'런닝'},{type:'combo',label:'복합'},{type:'rest',label:'휴식'}],
-    6:[{type:'run',label:'런닝'},{type:'station',label:'스테이션'},{type:'combo',label:'복합'},{type:'run',label:'런닝'},{type:'station',label:'스테이션'},{type:'combo',label:'복합'},{type:'rest',label:'휴식'}],
-  };
-  const template = schedules[daysNum] || schedules[4];
-  const typeClass = {run:'pill-run',station:'pill-station',combo:'pill-combo',rest:'pill-rest'};
-  const phaseLabels = weeksNum <= 4 ? ['기초'] : weeksNum <= 8 ? ['기초','강화'] : weeksNum <= 12 ? ['기초','강화','피크'] : ['기초','강화','피크','테이퍼'];
-  const perPhase = Math.round(weeksNum / phaseLabels.length);
-  let html = '';
-  const showWeeks = Math.min(weeksNum, 4);
-  for (let w = 1; w <= showWeeks; w++) {
-    const phaseIdx = Math.min(Math.floor((w-1)/perPhase), phaseLabels.length-1);
-    html += `<div class="week-row"><span class="week-num">W${w}<br><small style="font-size:10px;color:#aaa">${phaseLabels[phaseIdx]}</small></span>`;
-    template.forEach((d,i) => {
-      html += `<div class="day-pill ${typeClass[d.type]}" title="${dayNames[i]}">${d.label}</div>`;
-    });
-    html += '</div>';
-  }
-  if (weeksNum > 4) {
-    html += `<div style="text-align:center;font-size:12px;color:#aaa;padding:10px 0">... ${weeksNum}주 전체 일정은 아래 AI 플랜 참고</div>`;
-  }
-  return html;
+function saveRecord(){
+  const date=document.getElementById('r-date').value;
+  const place=document.getElementById('r-place').value.trim()||'미입력';
+  const cat=document.getElementById('r-cat').value;
+  const total=document.getElementById('r-total').value.trim();
+  if(!date||!total){showToast('날짜와 총 기록을 입력해주세요');return}
+  const totalSecs=toSecs(total);
+  if(!totalSecs){showToast('기록 형식: mm:ss (예: 62:34)');return}
+  const segs={};
+  SEGS.forEach(id=>{segs[id]=document.getElementById(id).value.trim()});
+  records.unshift({id:Date.now(),date,place,cat,total,totalSecs,segs});
+  localStorage.setItem('hyrox_records',JSON.stringify(records));
+  SEGS.forEach(id=>document.getElementById(id).value='');
+  ['r-total','r-place'].forEach(id=>document.getElementById(id).value='');
+  renderRecordList();renderDashboard();showToast('기록이 저장됐어요!');
 }
-
-async function generatePlan() {
-  const curTime = document.getElementById('cur-time').value.trim();
-  const goalTime = document.getElementById('goal-time').value.trim();
-  const weeks = document.getElementById('weeks-left').value;
-  const days = document.getElementById('days-per-week').value;
-  const level = document.getElementById('level').value;
-  const extra = document.getElementById('extra').value.trim();
-
-  if (!goalTime) { alert('목표 기록을 입력해주세요.'); return; }
-
-  const btn = document.getElementById('gen-btn');
-  btn.disabled = true;
-  btn.textContent = '생성 중...';
-
-  document.getElementById('plan-card').classList.remove('hidden');
-  document.getElementById('week-schedule').innerHTML = buildSchedule(days, weeks);
-  document.getElementById('ai-card').classList.remove('hidden');
-
-  const resultEl = document.getElementById('result-text');
-  resultEl.textContent = '훈련 계획 생성 중...';
-  resultEl.classList.add('loading');
-
-  const levelMap = {beginner:'입문자 (처음 도전)', intermediate:'중급자 (1-3회 완주 경험)', advanced:'상급자 (기록 단축 목표)'};
-  const weakStr = selectedWeaknesses.length ? selectedWeaknesses.join(', ') : '없음 (전반적 향상)';
-
-  const prompt = `당신은 하이록스(HYROX) 전문 코치입니다. 아래 선수 정보를 바탕으로 맞춤 훈련 계획을 한국어로 작성해주세요.
-
-선수 정보:
-- 현재 기록: ${curTime || '미측정'}
-- 목표 기록: ${goalTime}
-- 대회까지: ${weeks}주
-- 주당 훈련: ${days}일
-- 레벨: ${levelMap[level]}
-- 취약 구간: ${weakStr}
-- 추가 사항: ${extra || '없음'}
-
-다음 형식으로 작성:
-1. 전략 요약 (3줄 이내)
-2. 주차별 훈련 포커스 (${weeks}주 전체, 간략히)
-3. 취약 구간 집중 훈련 방법 (구체적 세트/반복수 포함)
-4. 런닝 훈련 가이드 (인터벌, 템포런 등)
-5. 대회 1주 전 테이퍼링 조언
-
-간결하고 실용적으로, 선수가 바로 실행할 수 있도록 작성해주세요.`;
-
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    const data = await resp.json();
-    resultEl.classList.remove('loading');
-    const text = data.content?.map(b => b.text || '').join('') || '응답을 받지 못했습니다.';
-    resultEl.textContent = text;
-  } catch(e) {
-    resultEl.classList.remove('loading');
-    resultEl.textContent = '오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
-  }
-
-  btn.disabled = false;
-  btn.textContent = 'AI 훈련 계획 다시 생성 →';
-  document.getElementById('plan-card').scrollIntoView({ behavior: 'smooth' });
+function deleteRecord(id){
+  records=records.filter(r=>r.id!==id);
+  localStorage.setItem('hyrox_records',JSON.stringify(records));
+  renderRecordList();renderDashboard();showToast('삭제됐어요');
 }
-
-function shareResult() {
-  const text = document.getElementById('result-text').textContent;
-  if (!text || text.includes('생성 중')) return;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = event.target;
-    btn.textContent = '복사 완료!';
-    setTimeout(() => btn.textContent = '결과 복사하기', 2000);
+function renderRecordList(){
+  const el=document.getElementById('record-list');
+  if(!records.length){el.innerHTML='<div class="empty"><div class="empty-text">저장된 기록이 없어요</div></div>';return}
+  const best=[...records].sort((a,b)=>a.totalSecs-b.totalSecs)[0].id;
+  el.innerHTML=records.map(r=>`<div class="hist-item"><div><div class="hist-date">${r.date} · ${r.place} · ${r.cat}</div><div class="hist-time">${r.total}</div></div><div class="hist-right">${r.id===best?'<span class="pr-badge">PR</span>':''}<button class="btn-red" onclick="deleteRecord(${r.id})">삭제</button></div></div>`).join('');
+}
+function renderDashboard(){
+  if(!records.length){
+    ['dash-best','dash-avg','dash-improve'].forEach(id=>document.getElementById(id).textContent='—');
+    document.getElementById('dash-count').textContent='0';
+    document.getElementById('dash-best-sub').textContent='기록 없음';
+    document.getElementById('dash-improve-sub').textContent='이전 대비';
+    document.getElementById('dash-recent').innerHTML='<div class="empty"><div style="font-size:32px;opacity:0.2;margin-bottom:8px">🏁</div><div class="empty-text">아직 기록이 없어요</div></div>';
+    document.getElementById('dash-chart').innerHTML='<div class="empty"><div style="font-size:32px;opacity:0.2;margin-bottom:8px">📊</div><div class="empty-text">기록을 입력하면 차트가 나타나요</div></div>';
+    return;
+  }
+  const sorted=[...records].sort((a,b)=>a.totalSecs-b.totalSecs);
+  const best=sorted[0];
+  const avg=Math.round(records.reduce((a,r)=>a+r.totalSecs,0)/records.length);
+  document.getElementById('dash-best').textContent=best.total;
+  document.getElementById('dash-best-sub').textContent=best.date+' · '+best.place;
+  document.getElementById('dash-count').textContent=records.length;
+  document.getElementById('dash-avg').textContent=toMMSS(avg);
+  if(records.length>=2){
+    const diff=records[1].totalSecs-records[0].totalSecs;
+    const sign=diff>0?'+':'';
+    document.getElementById('dash-improve').textContent=(diff<0?'-':'+')+toMMSS(Math.abs(diff));
+    document.getElementById('dash-improve-sub').textContent=diff<0?'단축':'증가';
+    document.getElementById('dash-improve').style.color=diff<0?'var(--green)':'var(--red)';
+  }
+  const chron=[...records].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const maxS=Math.max(...chron.map(r=>r.totalSecs));
+  const minS=Math.min(...chron.map(r=>r.totalSecs));
+  const range=maxS-minS||1;
+  document.getElementById('dash-chart').innerHTML=`<div class="mini-chart">${chron.map(r=>{const h=Math.round(20+((maxS-r.totalSecs)/range)*56);return`<div class="chart-bar-wrap"><div class="chart-val">${r.total}</div><div class="chart-bar${r.id===best.id?' best':''}" style="height:${h}px"></div><div class="chart-label">${r.date.slice(5)}</div></div>`}).join('')}</div>`;
+  document.getElementById('dash-recent').innerHTML=records.slice(0,3).map(r=>`<div class="hist-item"><div><div class="hist-date">${r.date} · ${r.place}</div><div class="hist-time">${r.total}</div><div class="hist-meta">${r.cat}</div></div>${r.id===best.id?'<span class="pr-badge">PR</span>':''}</div>`).join('');
+}
+function calcPace(){
+  const goal=document.getElementById('pace-goal').value.trim();
+  const gender=document.getElementById('pace-gender').value;
+  const totalSecs=toSecs(goal);
+  if(!totalSecs){document.getElementById('pace-result').style.display='none';return}
+  const ratios=gender==='m'?RATIOS_M:RATIOS_F;
+  const keys=Object.keys(ratios);
+  document.getElementById('pace-breakdown').innerHTML=keys.map((k,i)=>`<div class="pace-row"><span class="pace-seg">${STATION_LABELS[i]}</span><span class="pace-target">${toMMSS(Math.round(totalSecs*ratios[k]))}</span></div>`).join('');
+  document.getElementById('run-pace').textContent=toMMSS(Math.round(totalSecs*0.42/8))+'/km';
+  document.getElementById('pace-result').style.display='block';
+}
+function renderPaceCompare(){
+  const el=document.getElementById('pace-compare');
+  const hasSegs=records.filter(r=>SEGS.some(s=>r.segs[s]));
+  if(hasSegs.length<2){el.innerHTML='<div class="empty"><div class="empty-text">구간 기록이 있는 대회가 2개 이상 필요해요</div></div>';return}
+  const last2=hasSegs.slice(0,2);
+  let html=`<div style="display:flex;justify-content:flex-end;gap:12px;margin-bottom:10px;font-size:11px;color:var(--muted)"><span style="color:var(--green)">${last2[0].date}</span><span>${last2[1].date}</span></div>`;
+  SEGS.forEach((sid,i)=>{
+    const v0=last2[0].segs[sid],v1=last2[1].segs[sid];
+    if(!v0&&!v1)return;
+    const s0=toSecs(v0),s1=toSecs(v1);
+    const diff=s0&&s1?s0-s1:null;
+    const diffStr=diff!==null?(diff<0?`<span style="color:var(--green);font-size:11px">▼${toMMSS(Math.abs(diff))}</span>`:`<span style="color:var(--red);font-size:11px">▲${toMMSS(diff)}</span>`):'';
+    html+=`<div class="pace-row"><span class="pace-seg">${SEG_NAMES[i]}</span><div style="display:flex;gap:10px;align-items:center">${diffStr}<span style="font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--green)">${v0||'—'}</span><span style="font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--muted)">${v1||'—'}</span></div></div>`;
   });
+  el.innerHTML=html;
 }
+function renderPlan(){
+  const weeks=parseInt(document.getElementById('plan-weeks').value);
+  const days=parseInt(document.getElementById('plan-days').value);
+  const level=document.getElementById('plan-level').value;
+  const sch={3:['run','rest','station','rest','combo','rest','rest'],4:['run','station','rest','combo','rest','run','rest'],5:['run','station','combo','rest','run','combo','rest'],6:['run','station','combo','run','station','combo','rest']}[days]||['run','station','rest','combo','rest','run','rest'];
+  const dayNames=['월','화','수','목','금','토','일'];
+  const typeLabel={run:'런닝',station:'스테이션',combo:'복합',rest:'휴식'};
+  const typeClass={run:'d-run',station:'d-station',combo:'d-combo',rest:'d-rest'};
+  const phases=weeks<=4?[{label:'기초',cls:'phase-base',w:weeks}]:weeks<=8?[{label:'기초',cls:'phase-base',w:Math.ceil(weeks/2)},{label:'강화',cls:'phase-build',w:Math.floor(weeks/2)}]:weeks<=12?[{label:'기초',cls:'phase-base',w:4},{label:'강화',cls:'phase-build',w:4},{label:'피크',cls:'phase-peak',w:weeks-9},{label:'테이퍼',cls:'phase-taper',w:1}]:[{label:'기초',cls:'phase-base',w:4},{label:'강화',cls:'phase-build',w:5},{label:'피크',cls:'phase-peak',w:5},{label:'테이퍼',cls:'phase-taper',w:2}];
+  const focus={base:{beginner:'기초 체력 & 동작 익히기',intermediate:'유산소 베이스 구축',advanced:'볼륨 증가'},build:{beginner:'강도 서서히 올리기',intermediate:'인터벌 & 스테이션 강화',advanced:'특화 훈련 집중'},peak:{beginner:'실전 시뮬레이션',intermediate:'복합 훈련 & 피크',advanced:'레이스 페이스 훈련'},taper:{beginner:'컨디션 조절',intermediate:'강도 40% 감소',advanced:'날카롭게 마무리'}};
+  const pkeys=['base','build','peak','taper'];
+  let html='';let wNum=1;
+  phases.forEach((ph,pi)=>{for(let w=0;w<ph.w;w++){const pk=pkeys[pi]||'base';html+=`<div class="week-card"><div class="week-header"><div style="display:flex;align-items:center;gap:8px"><span class="week-title">WEEK ${wNum}</span><span class="phase-badge ${ph.cls}">${ph.label}</span></div><span style="font-size:11px;color:var(--muted)">${focus[pk][level]}</span></div><div class="days-row">${sch.map((type,i)=>`<div class="day-cell ${typeClass[type]}"><div class="day-name">${dayNames[i]}</div>${typeLabel[type]}</div>`).join('')}</div></div>`;wNum++;}});
+  const tips={beginner:['완주가 먼저, 기록은 나중에. 페이스 유지에 집중하세요.','동작을 정확히 익히고 속도를 올리세요.','런닝은 대화 가능한 페이스(존2)로 베이스를 쌓으세요.'],intermediate:['브릭 트레이닝: 스테이션 직후 바로 런닝하는 훈련이 핵심이에요.','인터벌: 1km × 6세트, 목표 페이스보다 10초 빠르게.','Wall Balls 100개 연속 완주 연습을 꼭 하세요.'],advanced:['2주에 1번 전체 구간 실전 시뮬레이션을 해보세요.','각 스테이션 전환을 10초 이내로 줄이는 훈련을 추가하세요.','테이퍼 주간엔 볼륨 40% 줄이고 강도는 유지하세요.']};
+  html+=`<div class="card"><div class="card-head">레벨별 훈련 팁</div>${tips[level].map(t=>`<div style="display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;line-height:1.6"><span style="color:var(--green);flex-shrink:0">▸</span><span>${t}</span></div>`).join('')}</div>`;
+  document.getElementById('plan-output').innerHTML=html;
+}
+document.getElementById('r-date').valueAsDate=new Date();
+renderDashboard();
+renderPlan();
 </script>
 </body>
 </html>
